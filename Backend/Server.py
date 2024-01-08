@@ -1,9 +1,11 @@
 from flask import Flask, request, send_file, jsonify, render_template
+from flask_cors import CORS
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 import os
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def index():

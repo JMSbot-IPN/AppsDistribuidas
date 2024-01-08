@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import Login from './Login';
+import ApiKey from './ApiKey';
+import FileUploader from './FileUploader';
+import FileDownloader from './FileDownloader';
+import Pricing from './Pricing';
 
 const Home = () => (
   <div>
@@ -8,30 +12,16 @@ const Home = () => (
   </div>
 );
 
-const Subir = () => (
-  <div>
-    <h2>Página de Subir</h2>
-    <p>Aquí puedes subir archivos.</p>
-  </div>
-);
-
-const Bajar = () => (
-  <div>
-    <h2>Página de Bajar</h2>
-    <p>Aquí puedes descargar archivos.</p>
-  </div>
-);
-
-const ApiKey = () => (
-  <div>
-    <h2>Página de ApiKey</h2>
-    <p>Aquí puedes gestionar tu clave API.</p>
-  </div>
-);
-
 const Sesion = ({ onLoginClick }) => (
   <div className="login">
     <button onClick={onLoginClick}>Iniciar Sesión</button>
+  </div>
+);
+
+const Planes = () => (
+  <div>
+    <h2>Página de Planes</h2>
+    <p>Aquí puedes ver los planes de suscripción.</p>
   </div>
 );
 
@@ -45,14 +35,15 @@ const App = () => {
   const renderComponent = () => {
     switch (route) {
       case 'subir':
-        return <Subir />;
+        return <FileUploader />;
       case 'bajar':
-        return <Bajar />;
+        return <FileDownloader />;
       case 'apikey':
         return <ApiKey />;
       case 'login':
-        // Aquí puedes redirigir a la sección de inicio de sesión, tal vez con un componente separado
         return <Login />;
+      case 'planes':
+        return <Pricing />;
       default:
         return <Home />;
     }
@@ -66,6 +57,7 @@ const App = () => {
           <li onClick={() => setRoute('subir')}>Subir</li>
           <li onClick={() => setRoute('bajar')}>Bajar</li>
           <li onClick={() => setRoute('apikey')}>Apikey</li>
+          <li onClick={() => setRoute('planes')}>Planes</li>
         </ul>
         <Sesion onLoginClick={handleLoginClick} />
       </nav>

@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('src/App.js')
 
 # Clave API simulada (reemplaza esto con tu manejo de claves real)
 API_KEY = 'tu_clave_api_secreta'

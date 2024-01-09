@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+var apikey = '';
 const ApiComponent = ({ API_KEY }) => {
   const [authStatus, setAuthStatus] = useState('');
+  apikey = API_KEY;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/recurso_protegido', {
-          headers: {
-            'API-Key': API_KEY
-          }
+        const response = await axios.get(`http://localhost:5001/redirect_APIkey?Key=${apikey}`, {
         });
 
-        if (response.data.Auth === 'Success') {
+        if (response.data === 'Success') {
           setAuthStatus('Success');
         } else {
           setAuthStatus('Fail');

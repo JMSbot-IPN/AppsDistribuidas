@@ -10,9 +10,10 @@ const FileDownloader = () => {
 
   const downloadFile = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/download?FileName=${fileName}`, {
+      const response = await axios.get(`http://localhost:5001/redirect_download/${fileName}`, {
         responseType: 'blob'
       });
+      console.log(response.data);
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');

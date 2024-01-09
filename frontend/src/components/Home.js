@@ -7,7 +7,7 @@ import Pricing from './Pricing';
 import AuthFail from './AuthFail';
 import AuthSuccess from './AuthSuccess';
 
-const API_KEY = 'tu_clave_api_secreta' + Math.random();
+const API_KEY = 'tu_clave_api_secreta';
 var AuthFlag = false;
 
 

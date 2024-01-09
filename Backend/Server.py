@@ -26,6 +26,7 @@ def recurso_protegido():
 @app.route('/upload', methods=['POST'])
 def cargar_archivo():
     archivo_cargado = request.files['file']
+    print(archivo_cargado)
     if archivo_cargado.filename != '':
         # Establece la ubicación donde se almacenarán los archivos cargados
         carpeta_carga = 'cargas'
@@ -38,6 +39,7 @@ def cargar_archivo():
 @app.route('/download/<nombre_archivo>', methods=['GET'])
 def descargar_archivo(nombre_archivo):
     ruta_archivo = os.path.join('cargas', nombre_archivo)
+    print(ruta_archivo)
     if os.path.exists(ruta_archivo):
         return send_file(ruta_archivo, as_attachment=True)
     return jsonify({'mensaje': 'Archivo no encontrado'})
@@ -69,4 +71,4 @@ def make_payment():
         }), 400
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

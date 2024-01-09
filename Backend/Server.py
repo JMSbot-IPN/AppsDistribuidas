@@ -2,14 +2,12 @@ from flask import Flask, request, send_file, jsonify, render_template
 from flask_cors import CORS
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
+import stripe
 import os
 
 app = Flask(__name__)
 CORS(app)
-
-@app.route('/')
-def index():
-    return render_template('src/App.js')
+stripe.api_key = os.getenv('STRIPE_SECRET_TEST')
 
 # Clave API simulada (reemplaza esto con tu manejo de claves real)
 API_KEY = 'tu_clave_api_secreta'
@@ -43,6 +41,32 @@ def descargar_archivo(nombre_archivo):
     if os.path.exists(ruta_archivo):
         return send_file(ruta_archivo, as_attachment=True)
     return jsonify({'mensaje': 'Archivo no encontrado'})
+
+@app.route('/payment', methods=['POST'])
+def make_payment():
+    data = request.get_json()
+    amount = data.get('amount')
+    payment_method_id = data.get('id')
+
+    try:
+        payment_intent = stripe.PaymentIntent.create(
+            amount=amount,
+            currency='usd',
+            description='Spatula company',
+            payment_method=payment_method_id,
+            confirm=True
+        )
+        print("Payment", payment_intent)
+        return jsonify({
+            'message': 'Payment successful',
+            'success': True
+        }), 200
+    except stripe.error.CardError as e:
+        print("Error", str(e))
+        return jsonify({
+            'message': 'Payment failed',
+            'success': False
+        }), 400
 
 if __name__ == '__main__':
     app.run(debug=True)

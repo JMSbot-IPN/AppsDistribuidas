@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import StripeContainer from './StripeContainer'; // Asume que StripeContainer está correctamente importado
 
 const SubscriptionPlans = () => {
   const plans = [
@@ -25,22 +26,32 @@ const SubscriptionPlans = () => {
     },
   ];
 
+  const [selectedPlan, setSelectedPlan] = useState(null);
+
+  const handlePlanClick = (plan) => {
+    setSelectedPlan(plan);
+  };
+
   return (
     <div className="subscription-plans">
-      {plans.map((plan, index) => (
-        <div className="plan-card" key={index}>
-          <h2>{plan.name}</h2>
-          <p className="price">{plan.price}</p>
-          <p>{plan.storage} de Almacenamiento</p>
-          <p>{plan.users}</p>
-          <ul>
-            {plan.features.map((feature, index) => (
-              <li key={index}>{feature}</li>
-            ))}
-          </ul>
-          <button>Seleccionar Plan</button>
-        </div>
-      ))}
+      {selectedPlan ? (
+        <StripeContainer plan={selectedPlan} />
+      ) : (
+        plans.map((plan, index) => (
+          <div className="plan-card" key={index}>
+            <h2>{plan.name}</h2>
+            <p className="price">{plan.price}</p>
+            <p>{plan.storage} de Almacenamiento</p>
+            <p>{plan.users}</p>
+            <ul>
+              {plan.features.map((feature, index) => (
+                <li key={index}>{feature}</li>
+              ))}
+            </ul>
+            <button onClick={() => handlePlanClick(plan)}>Seleccionar Plan</button>
+          </div>
+        ))
+      )}
     </div>
   );
 };

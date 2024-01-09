@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const API_KEY = 'tu_clave_api_secreta'; // Reemplaza con tu clave API
-
-const ApiComponent = () => {
+const ApiComponent = ({ API_KEY }) => {
   const [authStatus, setAuthStatus] = useState('');
 
   useEffect(() => {
@@ -27,7 +25,7 @@ const ApiComponent = () => {
     };
 
     fetchData();
-  }, []);
+  }, [API_KEY]);
 
   return (
     <div>

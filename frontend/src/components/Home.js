@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Login from './Login';
 import ApiKey from './ApiKey';
 import FileUploader from './FileUploader';
 import FileDownloader from './FileDownloader';
 import Pricing from './Pricing';
+import AuthFail from './AuthFail';
+import AuthSuccess from './AuthSuccess';
+
+const API_KEY = 'tu_clave_api_secreta' + Math.random();
+var AuthFlag = false;
+
 
 const Home = () => (
   <div>
@@ -18,15 +24,20 @@ const Sesion = ({ onLoginClick }) => (
   </div>
 );
 
-const Planes = () => (
-  <div>
-    <h2>Página de Planes</h2>
-    <p>Aquí puedes ver los planes de suscripción.</p>
-  </div>
-);
-
 const App = () => {
   const [route, setRoute] = useState('home');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const authStatus = await AuthSuccess(API_KEY);
+      console.log('Estado de la Autenticación:', authStatus);
+      if (authStatus === 'Success') {
+        AuthFlag = true;
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleLoginClick = () => {
     setRoute('login'); // Redirige a la sección de inicio de sesión
@@ -35,11 +46,19 @@ const App = () => {
   const renderComponent = () => {
     switch (route) {
       case 'subir':
-        return <FileUploader />;
+        if (AuthFlag) {
+          return <FileUploader />;
+        } else {
+        return <AuthFail />;
+        }
       case 'bajar':
-        return <FileDownloader />;
+        if (AuthFlag) {
+          return <FileDownloader />;
+        } else {
+        return <AuthFail />;
+        }
       case 'apikey':
-        return <ApiKey />;
+        return <ApiKey API_KEY={API_KEY}/>;
       case 'login':
         return <Login />;
       case 'planes':

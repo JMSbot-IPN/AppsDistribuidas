@@ -1,20 +1,43 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const Login = () => {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [showRegister, setShowRegister] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [message, setMessage] = useState('');
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
-    // Lógica de inicio de sesión
-    console.log('Inicio de sesión:', { email: loginEmail, password: loginPassword });
+    try {
+      const response = await axios.get('http://localhost:5000/sesion', {
+        params: {
+          mail: loginEmail,
+          pwd: loginPassword
+        }
+      });
+
+      console.log('Respuesta de inicio de sesión:', response.data);
+      // Aquí puedes manejar la respuesta como desees, actualizar el estado, redirigir, etc.
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error);
+    }
   };
 
-  const handleRegister = (event) => {
+  const handleRegister = async (event) => {
     event.preventDefault();
-    // Lógica de registro de usuario
-    console.log('Registro de usuario:', { email: loginEmail, password: loginPassword });
+    try {
+      const response = await axios.post('http://localhost:5000/registro', {
+        correo: loginEmail,
+        pwd: loginPassword,
+      });
+
+      setMessage(response.data.mensaje);
+      setIsRegistering(false);
+    } catch (error) {
+      console.error('Error al registrar usuario:', error);
+    }
   };
 
   const toggleRegister = () => {

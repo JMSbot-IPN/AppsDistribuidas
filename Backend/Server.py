@@ -4,6 +4,7 @@ from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 import stripe
 import os
+import pyodbc
 
 app = Flask(__name__)
 CORS(app)
@@ -69,6 +70,50 @@ def make_payment():
             'message': 'Payment failed',
             'success': False
         }), 400
+    
+@app.route('/sesion', methods=['GET'])
+def iniciar_sesion():
+    mail = request.args.get('mail')
+    pwd = request.args.get('pwd')
+
+    conn_str = 'DRIVER={SQL Server};SERVER=base-app-dist.database.windows.net;DATABASE=BaseAppsDist;UID=kykar;PWD=Esquites123.'
+    conn = pyodbc.connect(conn_str)
+    cursor = conn.cursor()
+
+    # Uso de parámetros en la consulta para evitar inyección SQL
+    cursor.execute('SELECT * FROM usuario WHERE correo = ? AND pass = ?', (mail, pwd))
+    rows = cursor.fetchall()
+
+    # Convertir los resultados a una lista de diccionarios
+    results = []
+    columns = [column[0] for column in cursor.description]
+    for row in rows:
+        results.append(dict(zip(columns, row)))
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(results)
+
+@app.route('/registro', methods=['POST'])
+def registrar_usuario():
+    data = request.get_json()
+    correo = data.get('correo')
+    pwd = data.get('pwd')
+    api_key = 'myapikey'
+
+    conn_str = 'DRIVER={SQL Server};SERVER=base-app-dist.database.windows.net;DATABASE=BaseAppsDist;UID=kykar;PWD=Esquites123.'
+    conn = pyodbc.connect(conn_str)
+    cursor = conn.cursor()
+
+    # Uso de parámetros en la consulta para evitar inyección SQL
+    cursor.execute('INSERT INTO usuario (correo, pass, api_key, tipo_plan) VALUES (?, ?, ?, ?)', (correo, pwd, api_key, 'basico'))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({'message': 'Usuario registrado exitosamente'})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

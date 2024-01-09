@@ -12,6 +12,24 @@ stripe.api_key = os.getenv('STRIPE_SECRET_TEST')
 # Clave API simulada (reemplaza esto con tu manejo de claves real)
 API_KEY = 'tu_clave_api_secreta'
 
+@app.route('/')
+def root():
+    return  "El servidor esta corriendo :)"
+
+@app.route('/usuarios/catalogo')
+def catalogo():
+    return  "Aqui mostraremos el catalogo"
+
+@app.route('/usuarios/facturas')
+def facturar():
+    return  "Aqui mostraremos las facturas"
+
+@app.route('/usuarios/transferencias/descargas')
+def descargas():
+    return  "Aqui mostraremos la trasnferencia de videos"
+
+
+
 @app.route('/recurso_protegido', methods=['GET'])
 def recurso_protegido():
     api_key = request.headers.get('API-Key')

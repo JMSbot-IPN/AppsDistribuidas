@@ -6,6 +6,8 @@ import FileDownloader from './FileDownloader';
 import Pricing from './Pricing';
 import AuthFail from './AuthFail';
 import AuthSuccess from './AuthSuccess';
+import Carrusel from './Carrusel';
+import Factura from './Factura';
 
 const API_KEY = 'tu_clave_api_secreta' + Math.random();
 var AuthFlag = false;
@@ -15,6 +17,7 @@ const Home = () => (
   <div>
     <h1>Bienvenido a la Página de Inicio</h1>
     <p>Selecciona una opción del menú de navegación.</p>
+    <Carrusel/>
   </div>
 );
 
@@ -23,6 +26,7 @@ const Sesion = ({ onLoginClick }) => (
     <button onClick={onLoginClick}>Iniciar Sesión</button>
   </div>
 );
+
 
 const App = () => {
   const [route, setRoute] = useState('home');
@@ -63,6 +67,8 @@ const App = () => {
         return <Login />;
       case 'planes':
         return <Pricing />;
+      case 'Factura':
+        return <Factura />;  
       default:
         return <Home />;
     }
@@ -77,6 +83,7 @@ const App = () => {
           <li onClick={() => setRoute('bajar')}>Bajar</li>
           <li onClick={() => setRoute('apikey')}>Apikey</li>
           <li onClick={() => setRoute('planes')}>Planes</li>
+          <li onClick={() => setRoute('factura')}>Factura</li>
         </ul>
         <Sesion onLoginClick={handleLoginClick} />
       </nav>

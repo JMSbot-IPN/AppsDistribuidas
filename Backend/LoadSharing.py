@@ -14,7 +14,7 @@ def APIkey(param):
     global APIkeyFlag
 
     try:
-        response = requests.get('http://localhost:5000/recurso_protegido', headers={'API-Key': param})
+        response = requests.get('http://169.254.129.3:5000/recurso_protegido', headers={'API-Key': param})
         
         if response.status_code == 200:
             data = response.json()
@@ -41,7 +41,7 @@ def uploadFile(archivo):
     files = {'file': (archivo.filename, archivo, archivo.content_type)}
     print(files)
     try:
-        response = requests.post('http://localhost:5000/upload', files=files)
+        response = requests.post('http://169.254.129.3:5000/upload', files=files)
         print(response.json())
     except requests.exceptions.RequestException as e:
         print("Error:", e)
@@ -58,7 +58,7 @@ def redirect_upload():
 def downloadFile(nombre_archivo):
     global DlData
     try:
-        response = requests.get('http://localhost:5000/download/'+nombre_archivo)
+        response = requests.get('http://169.254.129.3:5000/download/'+nombre_archivo)
         DlData = response.content
     except requests.exceptions.RequestException as e:
         print("Error:", e)

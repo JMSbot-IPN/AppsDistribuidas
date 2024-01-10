@@ -6,6 +6,7 @@ import FileDownloader from './FileDownloader';
 import Pricing from './Pricing';
 import AuthFail from './AuthFail';
 import AuthSuccess from './AuthSuccess';
+import axios from 'axios';
 
 const API_KEY = 'tu_clave_api_secreta';
 var AuthFlag = false;
@@ -26,21 +27,46 @@ const Sesion = ({ onLoginClick }) => (
 
 const App = () => {
   const [route, setRoute] = useState('home');
+  const [authFlag, setAuthFlag] = useState(false);
+
+  const checkActiveUser = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/ActiveUserVerify');
+      if (response.status === 200) {
+        setAuthFlag(true);
+      } else {
+        setAuthFlag(false);
+      }
+    } catch (error) {
+      console.error('Error al verificar el usuario activo:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       const authStatus = await AuthSuccess(API_KEY);
       console.log('Estado de la Autenticación:', authStatus);
       if (authStatus === 'Success') {
-        AuthFlag = true;
+        setAuthFlag(true);
+        checkActiveUser(); // Verificar el usuario activo después de la autenticación
+      } else {
+        setAuthFlag(false);
       }
     };
 
     fetchData();
+    checkActiveUser(); // Verificar el usuario activo al cargar la página
   }, []);
 
   const handleLoginClick = () => {
-    setRoute('login'); // Redirige a la sección de inicio de sesión
+    // Lógica para iniciar/cerrar sesión
+    if (authFlag) {
+      // Si está autenticado, cerrar sesión
+      setAuthFlag(false);
+    } else {
+      // Si no está autenticado, redirigir a iniciar sesión
+      setRoute('login');
+    }
   };
 
   const renderComponent = () => {
@@ -68,6 +94,11 @@ const App = () => {
     }
   };
 
+  const handleLogoutClick = () => {
+    // Lógica para cerrar sesión
+    // setAuthFlag(false); Cambia el estado de autenticación a falso
+  };
+
   return (
     <div>
       <nav className="navbar">
@@ -78,7 +109,13 @@ const App = () => {
           <li onClick={() => setRoute('apikey')}>Apikey</li>
           <li onClick={() => setRoute('planes')}>Planes</li>
         </ul>
-        <Sesion onLoginClick={handleLoginClick} />
+        {authFlag ? (
+          <div className="login">
+            <button onClick={handleLoginClick}>Iniciar Sesion</button>
+          </div>
+        ) : (
+          <Sesion onLoginClick={handleLoginClick} />
+        )}
       </nav>
 
       {renderComponent()}

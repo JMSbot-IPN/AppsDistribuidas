@@ -115,5 +115,51 @@ def registrar_usuario():
 
     return jsonify({'message': 'Usuario registrado exitosamente'})
 
+@app.route('/ActiveUser', methods=['POST'])
+def ActiveUser():
+    data = request.get_json()
+    correo = data.get('correo')
+
+    conn_str = 'DRIVER={SQL Server};SERVER=base-app-dist.database.windows.net;DATABASE=BaseAppsDist;UID=kykar;PWD=Esquites123.'
+    conn = pyodbc.connect(conn_str)
+    cursor = conn.cursor()
+
+    # Uso de parámetros en la consulta para evitar inyección SQL
+    if correo == 'None':
+        cursor.execute('UPDATE ActiveUser SET correo = ? WHERE id = 1', ('asereje'))
+    else:
+        cursor.execute('UPDATE ActiveUser SET correo = ? WHERE id = 1', (correo))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({'message': 'Usuario activado exitosamente'})
+
+@app.route('/ActiveUserVerify', methods=['GET'])
+def ActiveUserVerify():
+    conn_str = 'DRIVER={SQL Server};SERVER=base-app-dist.database.windows.net;DATABASE=BaseAppsDist;UID=kykar;PWD=Esquites123.'
+    conn = pyodbc.connect(conn_str)
+    cursor = conn.cursor()
+
+    # Uso de parámetros en la consulta para evitar inyección SQL
+    cursor.execute('SELECT * FROM ActiveUser')
+    rows = cursor.fetchall()
+
+    # Convertir los resultados a una lista de diccionarios
+    results = []
+    columns = [column[0] for column in cursor.description]
+    for row in rows:
+        results.append(dict(zip(columns, row)))
+    if results[0]['correo'] == 'asereje':
+        AuthFlag = 'offline'
+    else:
+        AuthFlag = 'online'
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(AuthFlag)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

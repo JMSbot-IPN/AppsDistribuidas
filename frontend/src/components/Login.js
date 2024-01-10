@@ -8,6 +8,8 @@ const Login = () => {
   const [isRegistering, setIsRegistering] = useState(false);
   const [message, setMessage] = useState('');
 
+  var correo = loginEmail;
+  
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
@@ -20,6 +22,19 @@ const Login = () => {
 
       console.log('Respuesta de inicio de sesión:', response.data);
       // Aquí puedes manejar la respuesta como desees, actualizar el estado, redirigir, etc.
+      if (response.status === 200) {
+        try {
+          const ActiveUser = await axios.post(`http://localhost:5000/ActiveUser`, {
+            correo: correo
+          });
+          console.log('Respuesta de activación de usuario:', ActiveUser.data);
+          // Mensaje emergente de sesión iniciada y recargar la página
+          window.alert('Sesión iniciada correctamente');
+          window.location.reload();
+        } catch (error) {
+          console.error('Error al activar usuario:', error);
+        }
+      }
     } catch (error) {
       console.error('Error al iniciar sesión:', error);
     }
